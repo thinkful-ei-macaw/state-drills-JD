@@ -1,8 +1,11 @@
-import React, { Component } from 'react';
-import './App.css';
-import RouletteGun from './state-drills/RouletteGun'
-import Tabs from './state/Tabs';
-const tabsProp = [
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { shallow } from 'enzyme'
+import toJson from 'enzyme-to-json'
+import Tabs from './Tabs'
+
+describe(`Tabs Component`, () => {
+  const tabsProp = [
   { name: 'First tab',
     content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam exercitationem quos consectetur expedita consequatur. Fugit, sapiente aspernatur corporis velit, dolor eum reprehenderit provident ipsam, maiores incidunt repellat! Facilis, neque doloremque.' },
   { name: 'Second tab',
@@ -11,17 +14,24 @@ const tabsProp = [
     content: 'Fugit, sapiente aspernatur corporis velit, dolor eum reprehenderit provident ipsam, maiores incidunt repellat! Facilis, neque doloremque. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam exercitationem quos consectetur expedita consequatur.' },
 ];
 
+  it('renders without errors', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(<Tabs />, div);
+    ReactDOM.unmountComponentAtNode(div);
+  })
 
-export default class App extends Component {
+  it('renders empty given no tabs', () => {
+    const wrapper = shallow(<Tabs />)
+    expect(toJson(wrapper)).toMatchSnapshot()
+  })
 
-  render() {
-
-    return (
-      <main className='App'>
-        <Tabs />
-        {/*<RouletteGun bulletInChamber={8}/>*/}
-      </main>
-    )
-  }
-
-}
+  it('renders the first tab by default', () => {
+    const wrapper = shallow(<Tabs tabs={tabsProp} />)
+    expect(toJson(wrapper)).toMatchSnapshot()
+  })
+  it('closes the first tab and opens any clicked tab', () => {
+  const wrapper = shallow(<Tabs tabs={tabsProp} />)
+  wrapper.find('button').at(1).simulate('click')
+  expect(toJson(wrapper)).toMatchSnapshot()
+})
+})
